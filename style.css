@@ -8,22 +8,38 @@ html {
 }
 
 :root{
-    --based-color: #c2af09;
+    --based-color: #5b6f92;
 }
 
 body {
     margin: 0;
+    height: 100vh;
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.music-player, 
+.container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 500px;
+    width: 400px;
+    box-shadow: 0 0 15px rgb(96, 96, 96);
+    overflow: auto;
 }
 
 .header {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    position: fixed;
     top: 0;
     width: 100%;
-    background-color: #101920;
+    background-color: #10192020;
     z-index: 1;
+    flex: 1;
 }
 
 .header__title p {
@@ -46,6 +62,36 @@ body {
     display: flex;
     flex-direction: column;
 } 
+
+.volume {
+    align-items: center;
+    display: flex;
+    margin: auto auto auto 26%;
+    flex: 1;
+}
+
+.icon-volume {
+    min-width: 20px;
+    color: var(--based-color);
+}
+
+.volume-input {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    width: 160px;
+    outline: none;
+    overflow: hidden;
+}
+
+.volume-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 10px;
+    width: 8px;
+    background-color: var(--based-color);
+    box-shadow: -20rem 5rem 0 20rem #71c4c2;
+}
 
 .cd {
     display: flex;
@@ -73,7 +119,6 @@ body {
     font-size: 1.4rem;
     align-items: center;
     color: white;
-    cursor: pointer;
 }
 
 .control {
@@ -83,7 +128,7 @@ body {
 }
 
 .icon-play,
-.play .icon-pause {
+.footer-play .icon-pause {
     width: 50px;
     height: 50px;
     font-size: 1.8rem;
@@ -96,24 +141,16 @@ body {
 }
 
 .icon-pause,
-.play .icon-play {
+.footer-play .icon-play {
     display: none;
-}
-
-.container {
-    background-color: #121212;
-    width: calc(100% + 1px);
-    padding: 16px 8px 16px 8px;
-    margin-top: 407px;
-    margin-left: -1px;
 }
 
 .song {
     display: flex;
     align-items: center;
-    background-color: #181818;
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 6px;
-    margin: 8px 0;
+    margin: 8px;
     cursor: pointer;
 }
 
@@ -132,7 +169,7 @@ body {
 .song_name {
     margin: 8px 0;
     font-size: 1.3rem;
-    color: rgb(90, 90, 90);
+    color: var(--based-color);
 }
 
 .song_detail {
@@ -187,7 +224,9 @@ body {
 .progress {
     -webkit-appearance: none;
     height: 1px;
+    width: 368px;
     margin: 16px;
+    outline: none;
 }
 
 .progress::-webkit-slider-thumb {
@@ -196,4 +235,52 @@ body {
     width: 15px;
     border-radius: 50%;
     background-color: var(--based-color);
+}
+
+#myVideo {
+    position: fixed;
+    display: block;
+    right: 0;
+    bottom: -220%;
+    width: 100%;
+    z-index: -1;
+  }
+
+  .background-pic {
+    position: fixed;
+    object-fit: cover;
+    top: 0;
+    right: 0;
+    width: 100%;
+    z-index: -1;
+  }
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    background: rgba(175, 175, 175, 0.2);
+    padding-top: 16px;
+    bottom: 0;
+    width: 100%;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+  }
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+}
+   
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background-color: var(--based-color);
+    border-radius: 1rem;
+}
+
+.time {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 16px 8px;
 }

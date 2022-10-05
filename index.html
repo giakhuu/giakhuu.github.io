@@ -4,45 +4,62 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edg\U0Vr1zotKIoe">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music</title>
+    <title>Documen</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <div class="header">
-        <div class="header__title">
-            <p>Now playing</p>
-            <h2>String 57th & 9th</h2>
-        </div>
-        <div class="cd">
-            <img src="./img/superidol.jpg" class="cd_pic" alt="">
-        </div>
-        <div class="header__control">
-            <i class="fas fa-redo icon"></i>
-            <i class="fas fa-step-backward icon"></i>
-            <div class="control">
-                <i class="fas fa-pause icon-pause icon"></i>
-                <i class="fas fa-play icon-play icon"></i>
-            </div>
-            <i class="fas fa-step-forward icon"></i>
-            <i class="fas fa-random icon"></i>
-        </div>
 
-        <input type="range" id="progress" class="progress" value="0" step="1" min="0" max="100">
+        <div class="music-player">
+            <div class="header">
+                <div class="header__title">
+                    <p>Now playing</p>
+                    <h2>String 57th & 9th</h2>
+                </div>
+                <div class="cd">
+                    <img src="./img/superidol.jpg" class="cd_pic" alt="">
+                </div>
+                <audio class="audio" src="" preload="metadata"></audio>
+                <div class="volume">
+                    <i class="fa-sharp fa-solid fa-volume-high icon-volume-on icon-volume"></i>
+                    <i class="fa-sharp fa-solid fa-volume-xmark icon-volume-off icon-volume"></i>
+                    <input type="range" class="volume-input" step="1" min="0" max="100"> 
+                </div>
+            </div>
+            <div class="footer">
+                <div class="header__control">
+                    <i class="fas fa-redo icon"></i>
+                    <i class="fas fa-step-backward icon"></i>
+                    <div class="control">
+                        <i class="fas fa-pause icon-pause icon"></i>
+                        <i class="fas fa-play icon-play icon"></i>
+                    </div>
+                    <i class="fas fa-step-forward icon"></i>
+                    <i class="fas fa-random icon"></i>
+                </div>
         
-        <audio class="audio" src=""></audio>
-    </div>
-    <div class="container">
-        <div class="song">
-            <img src="/HTML,CSS/shopee project/asset/img/avatars-zxyWtNoHP4m391wt-z0mnTA-t500x500.jpg" alt="" class="song_pic">
-            <div class="song_detail">
-                <h4 class="song_name">Tên bài hát</h4>
-                <p class="song_singer">Tên nghệ sĩ trình bày</p>
+                <input type="range" id="progress" class="progress" value="0" step="1" min="0" max="100">
+                <div class="time">
+                    <div class="current"></div>
+                    <div class="duration"></div>
+                </div>
             </div>
-            <i class="fas fa-ellipsis-h song-option-icon"></i>
         </div>
-    </div>
+        <video muted loop id="myVideo">
+            <source src="./img/catdance.mp4" type="video/mp4">
+          </video>
+        <img src="./img/ayanami.jpg" alt="" class="background-pic">
 
+        <div class="container">
+            <div class="song">
+                <img src="/HTML,CSS/shopee project/asset/img/avatars-zxyWtNoHP4m391wt-z0mnTA-t500x500.jpg" alt="" class="song_pic">
+                <div class="song_detail">
+                    <h4 class="song_name">Tên bài hát</h4>
+                    <p class="song_singer">Tên nghệ sĩ trình bày</p>
+                </div>
+                <i class="fas fa-ellipsis-h song-option-icon"></i>
+            </div>
+        </div>
 
     <!-- Phần javascipt -->
     <script>
@@ -60,88 +77,99 @@
         const loopBtn = $('.fa-redo')
         const song = $$('.song')
         const container = $('.container')
+        var currentIndex = 0
+        var volValue = 100
+        const video = $("#myVideo")
+        const footer = $(".footer")
+        const background = $('.background-pic')
+        const vol = $('.volume-input')
+        const volOn = $('.icon-volume-on')
+        const volOff = $('.icon-volume-off')
 /*
-Làm xong nhớ Css lại cho nó đẹp:
-- Cái range
-- Cái background màu tối
-- 
-Các việc cần làm:
-- Render các bài hát ra
-- Làm cho lướt lên cái header thu nhỏ lại: lắng nghe sự kiện kéo
-- làm cái get current song: phải định nghĩa các object, ở đây ta định nghĩa cái current song, tạm thời xài cái bài đầu tiên trước
-- Tải thông tin bài hát đầu tiên vào video
-- lắng nghe sự kiện play: làm cái toggle class play  
-- Play pause seek: Lên mạng search html audio/video
+
 Các thứ tự làm:
-- làm cho nó xịn như cái đã ghim
-- Thời gian của nhạc theo phút
-- css lại cái thanh chaỵ
-2. Fix lỗi khi tua bài hát, click giữ một chút sẽ thấy lỗi, vì event updatetime nó liên tục chạy dẫn tới lỗi
-3. Fix lỗi khi next tới 1-3 bài đầu danh sách thì không “scroll into view”
-4. Lưu lại vị trí bài hát đang nghe, F5 lại ứng dụng không bị quay trở về bài đầu tiên
-5. Thêm chức năng điều chỉnh âm lượng, lưu vị trí âm lượng người dùng đã chọn. Mặc định 100%
+1. thêm 1 cái class là nhạc buồn hay vui để chon clip background phù hợp
 */
 
         const app = {
-            currentIndex: 0,
             onPlaying: false,
-            onRandom: false,
-            onLoop: false,
             song: [
             {
                 name: "Tài liệu không có tiêu đề",
                 singer: "Khói",
                 path: "./music/song1.mp3",
-                image: './img/tailieu.jpg'
+                image: './img/tailieu.jpg',
+                kind: "sad"
             },
             {
                 name: "Took her to the O",
                 singer: "King Von",
                 path: "./music/song2.mp3",
-                image: './img/took.jpg'
+                image: './img/took.jpg',
+                kind: "fun"
             },
             {
                 name: "Tại vì sao",
                 singer: "MCK",
                 path: "./music/song3.mp3",
-                image: './img/taivisao.jpg'
+                image: './img/taivisao.jpg',
+                kind: "sad"
             },
             {
                 name: "Love Sosa",
                 singer: "Chief Keef",
                 path: "./music/song4.mp3",
-                image: './img/lovesosa.jpg'
+                image: './img/lovesosa.jpg',
+                kind: "fun"
             },
             {
                 name: "Kaen",
                 singer: "Ziyoou Vachi",
                 path: "./music/song5.mp3",
-                image: './img/dororo.webp'
+                image: './img/dororo.webp',
+                kind: "fun"
             },
             {
                 name: "Messed up",
                 singer: "Hale",
                 path: "./music/song6.mp3",
-                image: './img/hale.jpg'
+                image: './img/hale.jpg',
+                kind: "sad"
             },
             {
                 name: "Perfect Girl",
                 singer: "Mareux",
                 path: "./music/song7.mp3",
-                image: './img/patrick.jpg'
+                image: './img/patrick.jpg',
+                kind: "fun"
             },
             {
                 name: "Message From The Star",
                 singer: "the rah ban",
                 path: "./music/song8.mp3",
-                image: './img/atrain.jpg'
+                image: './img/atrain.jpg',
+                kind: "fun"
             },
+            {
+                name: "Gangnam Style",
+                singer: "PSY",
+                path: "./music/song9.mp3",
+                image: './img/psy.jpg',
+                kind: "fun"
+            },
+            {
+                name: "Nhạc cho rei doll nhảy cho hợp",
+                singer: "Đội kèn đám ma",
+                path: "./music/song10.mp3",
+                image: './img/rei.jpg',
+                kind: "fun"
+            }
         ],
             
             render: function() {
                 var htmls = this.song.map((song, index) => {
                     return `
-                    <div class="song ${index === app.currentIndex ? 'active' : ''}" data-index = "${index}">
+                    <div class="song ${index === currentIndex ? 'active' : ''}" data-index = "${index}">
                         <img src="${song.image}" alt="" class="song_pic">
                         <div class="song_detail">
                             <h4 class="song_name">${song.name}</h4>
@@ -153,6 +181,7 @@ Các thứ tự làm:
                 })
 
                 $('.container').innerHTML = htmls.join('')
+
             },
             // xử lí các sự kiện
             handleEvent: function () {
@@ -184,15 +213,25 @@ Các thứ tự làm:
                 }
                 // các sự khiện khi play/pause
                 audio.onplay = function () {
+                        audio.volume = vol.value / 100
                         app.onPlaying = true
                         header.classList.add('play')
+                        footer.classList.add('footer-play')
                         cdAnimate.play()
+                        app.addVideo()
+                        video.play()
+                        video.style.display = 'block'
+                        background.style.display = 'none'
                     }
 
                 audio.onpause = function () {
                     app.onPlaying = false
                     header.classList.remove('play')
+                    footer.classList.remove('footer-play')
                     cdAnimate.pause()
+                    video.pause()
+                    video.style.display = 'none'
+                    background.style.display = 'block'
                 }
                 // cho cái input nó chạy
                 audio.ontimeupdate = function () {
@@ -202,6 +241,7 @@ Các thứ tự làm:
                     if (audio.ended) {
                         app.nextSong()
                     }
+                    app.loadCurrentTime()
                 }
                 // Tua
                 input.oninput = function () {
@@ -217,31 +257,31 @@ Các thứ tự làm:
                 }           
                 // bấm nút random
                 randomBtn.onclick = function () {
-                    if (app.onRandom) {
+                    if (sessionStorage.getItem("onRandom") === "true") {
                         randomBtn.classList.remove('active')
-                        app.onRandom = false
+                        sessionStorage.setItem("onRandom", false)
                     }
                     else {
                         randomBtn.classList.add('active')
-                        app.onRandom = true
+                        sessionStorage.setItem("onRandom", true)
                     }
-                    if (app.onLoop) {
-                        app.onLoop = false
+                    if (sessionStorage.getItem("onLoop") === "true") {
+                        sessionStorage.setItem("onLoop", false)
                         loopBtn.classList.remove('active')
-                    }
+                    }   
                 }
             
                 loopBtn.onclick = function () {
-                    if (app.onLoop) {
+                    if (sessionStorage.getItem("onLoop") === "true") {
                         loopBtn.classList.remove('active')
-                        app.onLoop = false
+                        sessionStorage.setItem("onLoop", false)
                     }
                     else {
                         loopBtn.classList.add('active')
-                        app.onLoop = true
+                        sessionStorage.setItem("onLoop", true)
                     }
-                    if (app.onRandom) {
-                        app.onRandom = false
+                    if (sessionStorage.getItem("onRandom") === "true") {
+                        sessionStorage.setItem("onRandom", false)
                         randomBtn.classList.remove('active')
                     }
                 }
@@ -250,22 +290,40 @@ Các thứ tự làm:
                 container.onclick = function (e) {
                     app.selectSong(e)
                 }
+
+                vol.oninput = function () {
+                    audio.volume = vol.value / 100
+                    sessionStorage.setItem("volValue", vol.value)
+                    app.checkVol()
+                }
+
+                audio.onloadedmetadata = function() {
+                    const totalTime = $('.duration')
+                    var totalMi = Math.floor(audio.duration / 60)
+                    var totalSec = Math.ceil(audio.duration) % 60
+                    if (totalSec < 10) {
+                        totalSec = '0' + totalSec
+                    } 
+                    totalTime.innerText = `${totalMi}:${totalSec}`
+                };
             },
 
             // qua bài tiếp theo
             nextSong: function() {
-                if (app.onRandom) {
+                if (sessionStorage.getItem("onRandom") === "true") {
                     app.playRandomSong()
                 } 
-                else if (app.onLoop) {
+                else if (sessionStorage.getItem("onLoop") === "true") {
                     app.playLoopSong()
                 }
                 else {
-                    if(app.currentIndex == app.song.length - 1) {
-                        app.currentIndex = 0
+                    if(currentIndex == app.song.length - 1) {
+                        currentIndex = 0
+                        sessionStorage.setItem("index", currentIndex)
                     }
                     else {
-                        app.currentIndex++
+                        currentIndex++
+                        sessionStorage.setItem("index", currentIndex)
                     }
                 }
                 app.loadCurrentSong()
@@ -275,18 +333,20 @@ Các thứ tự làm:
             },
             // bấm nút back
             prevSong: function() {
-                if (app.onRandom) {
+                if (sessionStorage.getItem("onRandom") === "true") {
                     app.playRandomSong()
                 } 
-                else if (app.onLoop) {
+                else if (sessionStorage.getItem("onLoop") === "true") {
                     app.playLoopSong()
                 }
                 else {
-                    if(app.currentIndex == 0) {
-                        app.currentIndex = app.song.length - 1
+                    if(currentIndex == 0) {
+                        currentIndex = app.song.length - 1
+                        sessionStorage.setItem("index", currentIndex)
                     }
                     else {
-                        app.currentIndex--
+                        currentIndex--
+                        sessionStorage.setItem("index", currentIndex)
                     }
                 }
                 app.loadCurrentSong()
@@ -296,17 +356,26 @@ Các thứ tự làm:
             },
             // bài random
             playRandomSong: function () {
-                this.currentIndex = Math.floor(Math.random() * app.song.length) 
+                currentIndex = Math.floor(Math.random() * app.song.length) 
+                sessionStorage.setItem("index", currentIndex)
             },
             // lặp lại một bài
             playLoopSong: function () {
-                this.currentIndex = this.currentIndex
+                currentIndex = currentIndex
+                sessionStorage.setItem("index", currentIndex)
             },
             // định nghĩa thêm
             defineProperties: function () {
+                if (Number(sessionStorage.getItem("volValue")) == 0) {
+                    volValue = 100
+                } else {
+                    volValue = Number(sessionStorage.getItem("volValue"))
+                }
+                vol.value = volValue
+                currentIndex = Number(sessionStorage.getItem("index"))
                 Object.defineProperty(this, 'currentSong', {
                     get: function () {
-                        return this.song[this.currentIndex];
+                        return this.song[currentIndex];
                     }
                 })
             },
@@ -334,7 +403,8 @@ Các thứ tự làm:
 
                 if (songNode && !option) {
                     // console.log(typeof songNode.getAttribute('data-index'))
-                    app.currentIndex = Number(songNode.getAttribute('data-index'))
+                    currentIndex = Number(songNode.getAttribute('data-index'))
+                    sessionStorage.setItem("index", currentIndex)
                     app.loadCurrentSong()
                     audio.play();
                     app.render();
@@ -342,7 +412,54 @@ Các thứ tự làm:
                 }
             },
 
+            // xét có randomm hay không
+
+            checkOption: function () {
+                if (sessionStorage.getItem("onRandom") === "true") {
+                        randomBtn.classList.add('active')
+                    }
+                else {
+                        randomBtn.classList.remove('active')
+                    }   
+                if (sessionStorage.getItem("onLoop") === "true") {
+                        loopBtn.classList.add('active')
+                    }
+                else {
+                        loopBtn.classList.remove('active')
+                        volOff.style.display = "none"
+                }
+            },
+
+            checkVol: function () {
+                if (vol.value == 0) {
+                    volOn.style.display = "none"
+                    volOff.style.display = "block"
+                } else {
+                    volOn.style.display = "block"
+                    volOff.style.display = "none"
+                }
+            },
+
+            addVideo: function () {
+                const kind = app.currentSong.kind
+                console.log(kind)
+            },
+
+            loadCurrentTime: function () {
+                const currentTime = $('.current')
+                    var currentMi = Math.floor(audio.currentTime / 60)
+                    var currentSec = Math.ceil(audio.currentTime) % 60
+                    if (currentSec < 10) {
+                        currentSec = '0' + currentSec
+                    } 
+                    currentTime.innerText = `${currentMi}:${currentSec}`
+                },
+
             start: function() {
+                this.checkOption()
+
+                this.checkVol()
+
                 this.defineProperties()
 
                 this.handleEvent()
@@ -352,7 +469,6 @@ Các thứ tự làm:
                 this.render()
             }
         }
-
         app.start()
     </script>
 </body>
